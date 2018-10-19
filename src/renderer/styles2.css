@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'perfect dos';
+    src: url('fonts/Perfect DOS VGA 437.ttf') format('truetype'),
+        /* Safari, Android, iOS */
+}
+
+.ace-monokai {
+    background-color: #0000AA;
+    /*font-size: large;
+    font-weight: 800;*/
+    font-family: 'perfect dos';
+    font-size: large;
+    font-weight: 200;
+
+}
+
+.toolbar,
+#status {
+    background-color: #303030;
+    padding: 10px;
+    color: #D0D0D0;
+    background-color: #0000AA;
+    border: none;
+}
+
+.ace-monokai .ace_gutter {
+    background: #0000AA;
+    color: #8F908A;
+}
+
+.ace_scrollbar {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    top: 0;
+}

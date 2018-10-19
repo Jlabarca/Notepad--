@@ -1,0 +1,7 @@
+.idea
+node_modules
+/src/renderer/bundle.js
+/build
+/release
+/cache
+.DS_Store
