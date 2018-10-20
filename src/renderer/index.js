@@ -38,22 +38,6 @@ initAce();
  * @param {String} [fileToOpen] A specific file to open.  Omit to show the open dialog.
  */
 function open(fileToOpen) {
-    const doOpen = (f) => {
-        file = f;
-        fs.readFile(f, 'utf8', (error, contents) => {
-
-            if (error) {
-                new Notification('RetroNote', {
-                    body: `Could not open ${f} : ${error}`
-                });
-            } else {
-                document.getElementById('filename').innerHTML = ` | ${f}`
-                app.addRecentDocument(f); // add to the native OS recent documents list in the dock
-                // new Notification('RetroNote', { body: `Opened ${f}.` });
-                editor.setValue(contents);
-            }
-        });
-    };
 
     if (fileToOpen) {
         doOpen(fileToOpen);
@@ -62,6 +46,27 @@ function open(fileToOpen) {
     }
 }
 
+function doOpen(f) {
+    file = f;
+    fs.readFile(f, 'utf8', (error, contents) => {
+
+        if (error) {
+            new Notification('RetroNote', {
+                body: `Could not open ${f} : ${error}`
+            });
+        } else {
+            document.getElementById('filename').innerHTML = ` | ${f}`
+            app.addRecentDocument(f); // add to the native OS recent documents list in the dock
+            // new Notification('RetroNote', { body: `Opened ${f}.` });
+            editor.setValue(contents);
+            let newFiles = store.get('files')
+            if (newFiles.indexOf(f) === -1) {
+                newFiles.push(f);
+                store.set('files', newFiles);
+            }
+        }
+    });
+};
 /**
  * Saves the contents of the editor
  */
@@ -122,5 +127,10 @@ function initAce() {
     editor = ace.edit('editor');
     editor.getSession().setMode('ace/mode/text');
     editor.setTheme('ace/theme/terminal');
-
+    let files = store.get('files');
+    console.log('files', files);
+    if (files.length > 0 && files[files.length - 1] != null) {
+        console.log('doOpen', files[files.length - 1]);
+        doOpen(files[files.length - 1])
+    }
 }
