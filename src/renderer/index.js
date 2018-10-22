@@ -55,7 +55,7 @@ function doOpen(f) {
                 body: `Could not open ${f} : ${error}`
             });
         } else {
-            document.getElementById('filename').innerHTML = ` | ${f}`
+            document.getElementById('filename').innerHTML = `${f}`
             app.addRecentDocument(f); // add to the native OS recent documents list in the dock
             // new Notification('RetroNote', { body: `Opened ${f}.` });
             editor.setValue(contents);
@@ -122,6 +122,12 @@ function initAce() {
     const ace = require('../brace');
     require('../brace/mode/text');
     require('../brace/theme/terminal');
+    require('../brace/ext/searchbox');
+    require('../brace/ext/keybinding_menu');
+    require('../brace/ext/chromevox');
+    require('../brace/ext/linking');
+
+
 
     // create the editor
     editor = ace.edit('editor');
