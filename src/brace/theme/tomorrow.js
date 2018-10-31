@@ -1,8 +1,7 @@
-ace.define("ace/theme/tomorrow",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = false;
-exports.cssClass = "ace-tomorrow";
-exports.cssText = ".ace-tomorrow .ace_gutter {\
+ace.define('ace/theme/tomorrow', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = false;
+  exports.cssClass = 'ace-tomorrow';
+  exports.cssText = '.ace-tomorrow .ace_gutter {\
 background: #f6f6f6;\
 color: #4D4D4C\
 }\
@@ -101,8 +100,8 @@ color: #8E908C\
 }\
 .ace-tomorrow .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bdu3f/BwAlfgctduB85QAAAABJRU5ErkJggg==) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

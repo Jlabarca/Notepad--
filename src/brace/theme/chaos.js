@@ -1,8 +1,7 @@
-ace.define("ace/theme/chaos",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-chaos";
-exports.cssText = ".ace-chaos .ace_gutter {\
+ace.define('ace/theme/chaos', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-chaos';
+  exports.cssText = ".ace-chaos .ace_gutter {\
 background: #141414;\
 color: #595959;\
 border-right: 1px solid #282828;\
@@ -150,7 +149,6 @@ color: #000;\
 }\
 ";
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
-
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

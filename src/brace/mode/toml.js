@@ -1,146 +1,134 @@
-ace.define("ace/mode/toml_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(acequire, exports, module) {
-"use strict";
+ace.define('ace/mode/toml_highlight_rules', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text_highlight_rules'], (acequire, exports, module) => {
+  const oop = acequire('../lib/oop');
+  const TextHighlightRules = acequire('./text_highlight_rules').TextHighlightRules;
 
-var oop = acequire("../lib/oop");
-var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
+  const TomlHighlightRules = function () {
+    const keywordMapper = this.createKeywordMapper({
+      'constant.language.boolean': 'true|false',
+    }, 'identifier');
 
-var TomlHighlightRules = function() {
-    var keywordMapper = this.createKeywordMapper({
-        "constant.language.boolean": "true|false"
-    }, "identifier");
-
-    var identifierRe = "[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*\\b";
+    const identifierRe = '[a-zA-Z\\$_\u00a1-\uffff][a-zA-Z\\d\\$_\u00a1-\uffff]*\\b';
 
     this.$rules = {
-    "start": [
+      start: [
         {
-            token: "comment.toml",
-            regex: /#.*$/
+          token: 'comment.toml',
+          regex: /#.*$/,
         },
         {
-            token : "string",
-            regex : '"(?=.)',
-            next  : "qqstring"
+          token: 'string',
+          regex: '"(?=.)',
+          next: 'qqstring',
         },
         {
-            token: ["variable.keygroup.toml"],
-            regex: "(?:^\\s*)(\\[\\[([^\\]]+)\\]\\])"
+          token: ['variable.keygroup.toml'],
+          regex: '(?:^\\s*)(\\[\\[([^\\]]+)\\]\\])',
         },
         {
-            token: ["variable.keygroup.toml"],
-            regex: "(?:^\\s*)(\\[([^\\]]+)\\])"
+          token: ['variable.keygroup.toml'],
+          regex: '(?:^\\s*)(\\[([^\\]]+)\\])',
         },
         {
-            token : keywordMapper,
-            regex : identifierRe
+          token: keywordMapper,
+          regex: identifierRe,
         },
         {
-           token : "support.date.toml",
-           regex: "\\d{4}-\\d{2}-\\d{2}(T)\\d{2}:\\d{2}:\\d{2}(Z)"
+          token: 'support.date.toml',
+          regex: '\\d{4}-\\d{2}-\\d{2}(T)\\d{2}:\\d{2}:\\d{2}(Z)',
         },
         {
-           token: "constant.numeric.toml",
-           regex: "-?\\d+(\\.?\\d+)?"
-        }
-    ],
-    "qqstring" : [
+          token: 'constant.numeric.toml',
+          regex: '-?\\d+(\\.?\\d+)?',
+        },
+      ],
+      qqstring: [
         {
-            token : "string",
-            regex : "\\\\$",
-            next  : "qqstring"
+          token: 'string',
+          regex: '\\\\$',
+          next: 'qqstring',
         },
         {
-            token : "constant.language.escape",
-            regex : '\\\\[0tnr"\\\\]'
+          token: 'constant.language.escape',
+          regex: '\\\\[0tnr"\\\\]',
         },
         {
-            token : "string",
-            regex : '"|$',
-            next  : "start"
+          token: 'string',
+          regex: '"|$',
+          next: 'start',
         },
         {
-            defaultToken: "string"
-        }
-    ]
+          defaultToken: 'string',
+        },
+      ],
     };
+  };
 
-};
+  oop.inherits(TomlHighlightRules, TextHighlightRules);
 
-oop.inherits(TomlHighlightRules, TextHighlightRules);
-
-exports.TomlHighlightRules = TomlHighlightRules;
+  exports.TomlHighlightRules = TomlHighlightRules;
 });
 
-ace.define("ace/mode/folding/ini",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(acequire, exports, module) {
-"use strict";
+ace.define('ace/mode/folding/ini', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/range', 'ace/mode/folding/fold_mode'], (acequire, exports, module) => {
+  const oop = acequire('../../lib/oop');
+  const Range = acequire('../../range').Range;
+  const BaseFoldMode = acequire('./fold_mode').FoldMode;
 
-var oop = acequire("../../lib/oop");
-var Range = acequire("../../range").Range;
-var BaseFoldMode = acequire("./fold_mode").FoldMode;
+  const FoldMode = exports.FoldMode = function () {
+  };
+  oop.inherits(FoldMode, BaseFoldMode);
 
-var FoldMode = exports.FoldMode = function() {
-};
-oop.inherits(FoldMode, BaseFoldMode);
-
-(function() {
-
+  (function () {
     this.foldingStartMarker = /^\s*\[([^\])]*)]\s*(?:$|[;#])/;
 
-    this.getFoldWidgetRange = function(session, foldStyle, row) {
-        var re = this.foldingStartMarker;
-        var line = session.getLine(row);
-        
-        var m = line.match(re);
-        
-        if (!m) return;
-        
-        var startName = m[1] + ".";
-        
-        var startColumn = line.length;
-        var maxRow = session.getLength();
-        var startRow = row;
-        var endRow = row;
+    this.getFoldWidgetRange = function (session, foldStyle, row) {
+      const re = this.foldingStartMarker;
+      let line = session.getLine(row);
 
-        while (++row < maxRow) {
-            line = session.getLine(row);
-            if (/^\s*$/.test(line))
-                continue;
-            m = line.match(re);
-            if (m && m[1].lastIndexOf(startName, 0) !== 0)
-                break;
+      let m = line.match(re);
 
-            endRow = row;
-        }
+      if (!m) return;
 
-        if (endRow > startRow) {
-            var endColumn = session.getLine(endRow).length;
-            return new Range(startRow, startColumn, endRow, endColumn);
-        }
+      const startName = `${m[1]}.`;
+
+      const startColumn = line.length;
+      const maxRow = session.getLength();
+      const startRow = row;
+      let endRow = row;
+
+      while (++row < maxRow) {
+        line = session.getLine(row);
+        if (/^\s*$/.test(line)) { continue; }
+        m = line.match(re);
+        if (m && m[1].lastIndexOf(startName, 0) !== 0) { break; }
+
+        endRow = row;
+      }
+
+      if (endRow > startRow) {
+        const endColumn = session.getLine(endRow).length;
+        return new Range(startRow, startColumn, endRow, endColumn);
+      }
     };
-
-}).call(FoldMode.prototype);
-
+  }).call(FoldMode.prototype);
 });
 
-ace.define("ace/mode/toml",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/toml_highlight_rules","ace/mode/folding/ini"], function(acequire, exports, module) {
-"use strict";
+ace.define('ace/mode/toml', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/toml_highlight_rules', 'ace/mode/folding/ini'], (acequire, exports, module) => {
+  const oop = acequire('../lib/oop');
+  const TextMode = acequire('./text').Mode;
+  const TomlHighlightRules = acequire('./toml_highlight_rules').TomlHighlightRules;
+  const FoldMode = acequire('./folding/ini').FoldMode;
 
-var oop = acequire("../lib/oop");
-var TextMode = acequire("./text").Mode;
-var TomlHighlightRules = acequire("./toml_highlight_rules").TomlHighlightRules;
-var FoldMode = acequire("./folding/ini").FoldMode;
-
-var Mode = function() {
+  const Mode = function () {
     this.HighlightRules = TomlHighlightRules;
     this.foldingRules = new FoldMode();
     this.$behaviour = this.$defaultBehaviour;
-};
-oop.inherits(Mode, TextMode);
+  };
+  oop.inherits(Mode, TextMode);
 
-(function() {
-    this.lineCommentStart = "#";
-    this.$id = "ace/mode/toml";
-}).call(Mode.prototype);
+  (function () {
+    this.lineCommentStart = '#';
+    this.$id = 'ace/mode/toml';
+  }).call(Mode.prototype);
 
-exports.Mode = Mode;
+  exports.Mode = Mode;
 });

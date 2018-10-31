@@ -1,9 +1,7 @@
-ace.define("ace/ext/static_highlight",["require","exports","module","ace/edit_session","ace/layer/text","ace/config","ace/lib/dom"], function(acequire, exports, module) {
-"use strict";
-
-var EditSession = acequire("../edit_session").EditSession;
-var TextLayer = acequire("../layer/text").Text;
-var baseStyles = ".ace_static_highlight {\
+ace.define('ace/ext/static_highlight', ['require', 'exports', 'module', 'ace/edit_session', 'ace/layer/text', 'ace/config', 'ace/lib/dom'], (acequire, exports, module) => {
+  const EditSession = acequire('../edit_session').EditSession;
+  const TextLayer = acequire('../layer/text').Text;
+  const baseStyles = ".ace_static_highlight {\
 font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', 'Droid Sans Mono', monospace;\
 font-size: 12px;\
 white-space: pre-wrap\
@@ -36,126 +34,121 @@ counter-increment: ace_line;\
 counter-reset: ace_line;\
 }\
 ";
-var config = acequire("../config");
-var dom = acequire("../lib/dom");
+  const config = acequire('../config');
+  const dom = acequire('../lib/dom');
 
-var SimpleTextLayer = function() {
+  const SimpleTextLayer = function () {
     this.config = {};
-};
-SimpleTextLayer.prototype = TextLayer.prototype;
+  };
+  SimpleTextLayer.prototype = TextLayer.prototype;
 
-var highlight = function(el, opts, callback) {
-    var m = el.className.match(/lang-(\w+)/);
-    var mode = opts.mode || m && ("ace/mode/" + m[1]);
-    if (!mode)
-        return false;
-    var theme = opts.theme || "ace/theme/textmate";
-    
-    var data = "";
-    var nodes = [];
+  var highlight = function (el, opts, callback) {
+    const m = el.className.match(/lang-(\w+)/);
+    const mode = opts.mode || m && (`ace/mode/${m[1]}`);
+    if (!mode) { return false; }
+    const theme = opts.theme || 'ace/theme/textmate';
+
+    let data = '';
+    const nodes = [];
 
     if (el.firstElementChild) {
-        var textLen = 0;
-        for (var i = 0; i < el.childNodes.length; i++) {
-            var ch = el.childNodes[i];
-            if (ch.nodeType == 3) {
-                textLen += ch.data.length;
-                data += ch.data;
-            } else {
-                nodes.push(textLen, ch);
-            }
+      let textLen = 0;
+      for (let i = 0; i < el.childNodes.length; i++) {
+        const ch = el.childNodes[i];
+        if (ch.nodeType == 3) {
+          textLen += ch.data.length;
+          data += ch.data;
+        } else {
+          nodes.push(textLen, ch);
         }
+      }
     } else {
-        data = dom.getInnerText(el);
-        if (opts.trim)
-            data = data.trim();
+      data = dom.getInnerText(el);
+      if (opts.trim) { data = data.trim(); }
     }
-    
-    highlight.render(data, mode, theme, opts.firstLineNumber, !opts.showGutter, function (highlighted) {
-        dom.importCssString(highlighted.css, "ace_highlight");
-        el.innerHTML = highlighted.html;
-        var container = el.firstChild.firstChild;
-        for (var i = 0; i < nodes.length; i += 2) {
-            var pos = highlighted.session.doc.indexToPosition(nodes[i]);
-            var node = nodes[i + 1];
-            var lineEl = container.children[pos.row];
-            lineEl && lineEl.appendChild(node);
-        }
-        callback && callback();
+
+    highlight.render(data, mode, theme, opts.firstLineNumber, !opts.showGutter, (highlighted) => {
+      dom.importCssString(highlighted.css, 'ace_highlight');
+      el.innerHTML = highlighted.html;
+      const container = el.firstChild.firstChild;
+      for (let i = 0; i < nodes.length; i += 2) {
+        const pos = highlighted.session.doc.indexToPosition(nodes[i]);
+        const node = nodes[i + 1];
+        const lineEl = container.children[pos.row];
+        lineEl && lineEl.appendChild(node);
+      }
+      callback && callback();
     });
-};
-highlight.render = function(input, mode, theme, lineStart, disableGutter, callback) {
-    var waiting = 1;
-    var modeCache = EditSession.prototype.$modes;
-    if (typeof theme == "string") {
-        waiting++;
-        config.loadModule(['theme', theme], function(m) {
-            theme = m;
-            --waiting || done();
-        });
+  };
+  highlight.render = function (input, mode, theme, lineStart, disableGutter, callback) {
+    let waiting = 1;
+    const modeCache = EditSession.prototype.$modes;
+    if (typeof theme === 'string') {
+      waiting++;
+      config.loadModule(['theme', theme], (m) => {
+        theme = m;
+        --waiting || done();
+      });
     }
-    var modeOptions;
-    if (mode && typeof mode === "object" && !mode.getTokenizer) {
-        modeOptions = mode;
-        mode = modeOptions.path;
+    let modeOptions;
+    if (mode && typeof mode === 'object' && !mode.getTokenizer) {
+      modeOptions = mode;
+      mode = modeOptions.path;
     }
-    if (typeof mode == "string") {
-        waiting++;
-        config.loadModule(['mode', mode], function(m) {
-            if (!modeCache[mode] || modeOptions)
-                modeCache[mode] = new m.Mode(modeOptions);
-            mode = modeCache[mode];
-            --waiting || done();
-        });
+    if (typeof mode === 'string') {
+      waiting++;
+      config.loadModule(['mode', mode], (m) => {
+        if (!modeCache[mode] || modeOptions) { modeCache[mode] = new m.Mode(modeOptions); }
+        mode = modeCache[mode];
+        --waiting || done();
+      });
     }
     function done() {
-        var result = highlight.renderSync(input, mode, theme, lineStart, disableGutter);
-        return callback ? callback(result) : result;
+      const result = highlight.renderSync(input, mode, theme, lineStart, disableGutter);
+      return callback ? callback(result) : result;
     }
     return --waiting || done();
-};
-highlight.renderSync = function(input, mode, theme, lineStart, disableGutter) {
+  };
+  highlight.renderSync = function (input, mode, theme, lineStart, disableGutter) {
     lineStart = parseInt(lineStart || 1, 10);
 
-    var session = new EditSession("");
+    const session = new EditSession('');
     session.setUseWorker(false);
     session.setMode(mode);
 
-    var textLayer = new SimpleTextLayer();
+    const textLayer = new SimpleTextLayer();
     textLayer.setSession(session);
 
     session.setValue(input);
 
-    var stringBuilder = [];
-    var length =  session.getLength();
+    const stringBuilder = [];
+    const length = session.getLength();
 
-    for(var ix = 0; ix < length; ix++) {
-        stringBuilder.push("<div class='ace_line'>");
-        if (!disableGutter)
-            stringBuilder.push("<span class='ace_gutter ace_gutter-cell' unselectable='on'>" + /*(ix + lineStart) + */ "</span>");
-        textLayer.$renderLine(stringBuilder, ix, true, false);
-        stringBuilder.push("\n</div>");
+    for (let ix = 0; ix < length; ix++) {
+      stringBuilder.push("<div class='ace_line'>");
+      if (!disableGutter) { stringBuilder.push("<span class='ace_gutter ace_gutter-cell' unselectable='on'>" + /* (ix + lineStart) + */ '</span>'); }
+      textLayer.$renderLine(stringBuilder, ix, true, false);
+      stringBuilder.push('\n</div>');
     }
-    var html = "<div class='" + theme.cssClass + "'>" +
-        "<div class='ace_static_highlight" + (disableGutter ? "" : " ace_show_gutter") +
-            "' style='counter-reset:ace_line " + (lineStart - 1) + "'>" +
-            stringBuilder.join("") +
-        "</div>" +
-    "</div>";
+    const html = `<div class='${theme.cssClass}'>` +
+        `<div class='ace_static_highlight${disableGutter ? '' : ' ace_show_gutter'
+        }' style='counter-reset:ace_line ${lineStart - 1}'>${
+          stringBuilder.join('')
+        }</div>` +
+    '</div>';
 
     textLayer.destroy();
 
     return {
-        css: baseStyles + theme.cssText,
-        html: html,
-        session: session
+      css: baseStyles + theme.cssText,
+      html,
+      session,
     };
-};
+  };
 
-module.exports = highlight;
-module.exports.highlight = highlight;
+  module.exports = highlight;
+  module.exports.highlight = highlight;
 });
-                (function() {
-                    ace.acequire(["ace/ext/static_highlight"], function() {});
-                })();
-            
+(function () {
+  ace.acequire(['ace/ext/static_highlight'], () => {});
+}());

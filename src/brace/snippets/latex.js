@@ -1,1 +1,3 @@
-ace.define("ace/snippets/latex",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=undefined,t.scope="latex"})
+ace.define('ace/snippets/latex', ['require', 'exports', 'module'], (e, t, n) => {
+  t.snippetText = undefined, t.scope = 'latex';
+});

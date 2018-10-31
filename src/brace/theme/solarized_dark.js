@@ -1,8 +1,7 @@
-ace.define("ace/theme/solarized_dark",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-solarized-dark";
-exports.cssText = ".ace-solarized-dark .ace_gutter {\
+ace.define('ace/theme/solarized_dark', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-solarized-dark';
+  exports.cssText = '.ace-solarized-dark .ace_gutter {\
 background: #01313f;\
 color: #d0edf7\
 }\
@@ -81,8 +80,8 @@ color: #657B83\
 }\
 .ace-solarized-dark .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNg0Db1ZVCxc/sPAAd4AlUHlLenAAAAAElFTkSuQmCC) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

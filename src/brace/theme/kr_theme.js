@@ -1,8 +1,7 @@
-ace.define("ace/theme/kr_theme",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-kr-theme";
-exports.cssText = ".ace-kr-theme .ace_gutter {\
+ace.define('ace/theme/kr_theme', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-kr-theme';
+  exports.cssText = '.ace-kr-theme .ace_gutter {\
 background: #1c1917;\
 color: #FCFFE0\
 }\
@@ -97,8 +96,8 @@ color: #BABD9C\
 }\
 .ace-kr-theme .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

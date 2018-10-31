@@ -1,8 +1,7 @@
-ace.define("ace/theme/pastel_on_dark",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-pastel-on-dark";
-exports.cssText = ".ace-pastel-on-dark .ace_gutter {\
+ace.define('ace/theme/pastel_on_dark', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-pastel-on-dark';
+  exports.cssText = '.ace-pastel-on-dark .ace_gutter {\
 background: #353030;\
 color: #8F938F\
 }\
@@ -101,8 +100,8 @@ color: #494949\
 }\
 .ace-pastel-on-dark .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYIiPj/8PAARgAh2NTMh8AAAAAElFTkSuQmCC) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

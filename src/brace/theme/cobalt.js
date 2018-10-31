@@ -1,8 +1,7 @@
-ace.define("ace/theme/cobalt",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-cobalt";
-exports.cssText = ".ace-cobalt .ace_gutter {\
+ace.define('ace/theme/cobalt', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-cobalt';
+  exports.cssText = '.ace-cobalt .ace_gutter {\
 background: #011e3a;\
 color: rgb(128,145,160)\
 }\
@@ -106,8 +105,8 @@ color: #9EFFFF\
 .ace-cobalt .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYHCLSvkPAAP3AgSDTRd4AAAAAElFTkSuQmCC) right repeat-y\
 }\
-";
+';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

@@ -1,9 +1,7 @@
-ace.define("ace/theme/textmate",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-"use strict";
-
-exports.isDark = false;
-exports.cssClass = "ace-tm";
-exports.cssText = ".ace-tm .ace_gutter {\
+ace.define('ace/theme/textmate', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = false;
+  exports.cssClass = 'ace-tm';
+  exports.cssText = '.ace-tm .ace_gutter {\
 background: #f0f0f0;\
 color: #333;\
 }\
@@ -120,146 +118,142 @@ background: rgb(250, 250, 255);\
 border: 1px solid rgb(200, 200, 250);\
 }\
 .ace-tm .ace_indent-guide {\
-background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
+background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;\
 }\
-";
+';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });
 
-ace.define("ace/ext/textarea",["require","exports","module","ace/lib/event","ace/lib/useragent","ace/lib/net","ace/ace","ace/theme/textmate"], function(acequire, exports, module) {
-"use strict";
+ace.define('ace/ext/textarea', ['require', 'exports', 'module', 'ace/lib/event', 'ace/lib/useragent', 'ace/lib/net', 'ace/ace', 'ace/theme/textmate'], (acequire, exports, module) => {
+  const event = acequire('../lib/event');
+  const UA = acequire('../lib/useragent');
+  const net = acequire('../lib/net');
+  const ace = acequire('../ace');
 
-var event = acequire("../lib/event");
-var UA = acequire("../lib/useragent");
-var net = acequire("../lib/net");
-var ace = acequire("../ace");
+  acequire('../theme/textmate');
 
-acequire("../theme/textmate");
-
-module.exports = exports = ace;
-var getCSSProperty = function(element, container, property) {
-    var ret = element.style[property];
+  module.exports = exports = ace;
+  const getCSSProperty = function (element, container, property) {
+    let ret = element.style[property];
 
     if (!ret) {
-        if (window.getComputedStyle) {
-            ret = window.getComputedStyle(element, '').getPropertyValue(property);
-        } else {
-            ret = element.currentStyle[property];
-        }
+      if (window.getComputedStyle) {
+        ret = window.getComputedStyle(element, '').getPropertyValue(property);
+      } else {
+        ret = element.currentStyle[property];
+      }
     }
 
     if (!ret || ret == 'auto' || ret == 'intrinsic') {
-        ret = container.style[property];
+      ret = container.style[property];
     }
     return ret;
-};
+  };
 
-function applyStyles(elm, styles) {
-    for (var style in styles) {
-        elm.style[style] = styles[style];
+  function applyStyles(elm, styles) {
+    for (const style in styles) {
+      elm.style[style] = styles[style];
     }
-}
+  }
 
-function setupContainer(element, getValue) {
+  function setupContainer(element, getValue) {
     if (element.type != 'textarea') {
-        throw new Error("Textarea acequired!");
+      throw new Error('Textarea acequired!');
     }
 
-    var parentNode = element.parentNode;
-    var container = document.createElement('div');
-    var resizeEvent = function() {
-        var style = 'position:relative;';
-        [
-            'margin-top', 'margin-left', 'margin-right', 'margin-bottom'
-        ].forEach(function(item) {
-            style += item + ':' +
-                        getCSSProperty(element, container, item) + ';';
-        });
-        var width = getCSSProperty(element, container, 'width') || (element.clientWidth + "px");
-        var height = getCSSProperty(element, container, 'height')  || (element.clientHeight + "px");
-        style += 'height:' + height + ';width:' + width + ';';
-        style += 'display:inline-block;';
-        container.setAttribute('style', style);
+    let parentNode = element.parentNode;
+    const container = document.createElement('div');
+    const resizeEvent = function () {
+      let style = 'position:relative;';
+      [
+        'margin-top', 'margin-left', 'margin-right', 'margin-bottom',
+      ].forEach((item) => {
+        style += `${item}:${
+          getCSSProperty(element, container, item)};`;
+      });
+      const width = getCSSProperty(element, container, 'width') || (`${element.clientWidth}px`);
+      const height = getCSSProperty(element, container, 'height') || (`${element.clientHeight}px`);
+      style += `height:${height};width:${width};`;
+      style += 'display:inline-block;';
+      container.setAttribute('style', style);
     };
     event.addListener(window, 'resize', resizeEvent);
     resizeEvent();
     parentNode.insertBefore(container, element.nextSibling);
     while (parentNode !== document) {
-        if (parentNode.tagName.toUpperCase() === 'FORM') {
-            var oldSumit = parentNode.onsubmit;
-            parentNode.onsubmit = function(evt) {
-                element.value = getValue();
-                if (oldSumit) {
-                    oldSumit.call(this, evt);
-                }
-            };
-            break;
-        }
-        parentNode = parentNode.parentNode;
+      if (parentNode.tagName.toUpperCase() === 'FORM') {
+        var oldSumit = parentNode.onsubmit;
+        parentNode.onsubmit = function (evt) {
+          element.value = getValue();
+          if (oldSumit) {
+            oldSumit.call(this, evt);
+          }
+        };
+        break;
+      }
+      parentNode = parentNode.parentNode;
     }
     return container;
-}
+  }
 
-exports.transformTextarea = function(element, options) {
-    var session;
-    var container = setupContainer(element, function() {
-        return session.getValue();
-    });
+  exports.transformTextarea = function (element, options) {
+    let session;
+    const container = setupContainer(element, () => session.getValue());
     element.style.display = 'none';
     container.style.background = 'white';
-    var editorDiv = document.createElement("div");
+    const editorDiv = document.createElement('div');
     applyStyles(editorDiv, {
-        top: "0px",
-        left: "0px",
-        right: "0px",
-        bottom: "0px",
-        border: "1px solid gray",
-        position: "absolute"
+      top: '0px',
+      left: '0px',
+      right: '0px',
+      bottom: '0px',
+      border: '1px solid gray',
+      position: 'absolute',
     });
     container.appendChild(editorDiv);
 
-    var settingOpener = document.createElement("div");
+    const settingOpener = document.createElement('div');
     applyStyles(settingOpener, {
-        position: "absolute",
-        right: "0px",
-        bottom: "0px",
-        background: "red",
-        cursor: "nw-resize",
-        borderStyle: "solid",
-        borderWidth: "9px 8px 10px 9px",
-        width: "2px",
-        borderColor: "lightblue gray gray lightblue",
-        zIndex: 101
+      position: 'absolute',
+      right: '0px',
+      bottom: '0px',
+      background: 'red',
+      cursor: 'nw-resize',
+      borderStyle: 'solid',
+      borderWidth: '9px 8px 10px 9px',
+      width: '2px',
+      borderColor: 'lightblue gray gray lightblue',
+      zIndex: 101,
     });
 
-    var settingDiv = document.createElement("div");
-    var settingDivStyles = {
-        top: "0px",
-        left: "20%",
-        right: "0px",
-        bottom: "0px",
-        position: "absolute",
-        padding: "5px",
-        zIndex: 100,
-        color: "white",
-        display: "none",
-        overflow: "auto",
-        fontSize: "14px",
-        boxShadow: "-5px 2px 3px gray"
+    const settingDiv = document.createElement('div');
+    const settingDivStyles = {
+      top: '0px',
+      left: '20%',
+      right: '0px',
+      bottom: '0px',
+      position: 'absolute',
+      padding: '5px',
+      zIndex: 100,
+      color: 'white',
+      display: 'none',
+      overflow: 'auto',
+      fontSize: '14px',
+      boxShadow: '-5px 2px 3px gray',
     };
     if (!UA.isOldIE) {
-        settingDivStyles.backgroundColor = "rgba(0, 0, 0, 0.6)";
+      settingDivStyles.backgroundColor = 'rgba(0, 0, 0, 0.6)';
     } else {
-        settingDivStyles.backgroundColor = "#333";
+      settingDivStyles.backgroundColor = '#333';
     }
 
     applyStyles(settingDiv, settingDivStyles);
     container.appendChild(settingDiv);
 
     options = options || exports.defaultOptions;
-    var editor = ace.edit(editorDiv);
+    const editor = ace.edit(editorDiv);
     session = editor.getSession();
 
     session.setValue(element.value || element.innerHTML);
@@ -268,293 +262,291 @@ exports.transformTextarea = function(element, options) {
     setupApi(editor, editorDiv, settingDiv, ace, options, load);
     setupSettingPanel(settingDiv, settingOpener, editor);
 
-    var state = "";
-    event.addListener(settingOpener, "mousemove", function(e) {
-        var rect = this.getBoundingClientRect();
-        var x = e.clientX - rect.left, y = e.clientY - rect.top;
-        if (x + y < (rect.width + rect.height)/2) {
-            this.style.cursor = "pointer";
-            state = "toggle";
-        } else {
-            state = "resize";
-            this.style.cursor = "nw-resize";
-        }
+    let state = '';
+    event.addListener(settingOpener, 'mousemove', function (e) {
+      const rect = this.getBoundingClientRect();
+      let x = e.clientX - rect.left,
+        y = e.clientY - rect.top;
+      if (x + y < (rect.width + rect.height) / 2) {
+        this.style.cursor = 'pointer';
+        state = 'toggle';
+      } else {
+        state = 'resize';
+        this.style.cursor = 'nw-resize';
+      }
     });
 
-    event.addListener(settingOpener, "mousedown", function(e) {
-        if (state == "toggle") {
-            editor.setDisplaySettings();
-            return;
-        }
-        container.style.zIndex = 100000;
-        var rect = container.getBoundingClientRect();
-        var startX = rect.width  + rect.left - e.clientX;
-        var startY = rect.height  + rect.top - e.clientY;
-        event.capture(settingOpener, function(e) {
-            container.style.width = e.clientX - rect.left + startX + "px";
-            container.style.height = e.clientY - rect.top + startY + "px";
-            editor.resize();
-        }, function() {});
+    event.addListener(settingOpener, 'mousedown', (e) => {
+      if (state == 'toggle') {
+        editor.setDisplaySettings();
+        return;
+      }
+      container.style.zIndex = 100000;
+      const rect = container.getBoundingClientRect();
+      const startX = rect.width + rect.left - e.clientX;
+      const startY = rect.height + rect.top - e.clientY;
+      event.capture(settingOpener, (e) => {
+        container.style.width = `${e.clientX - rect.left + startX}px`;
+        container.style.height = `${e.clientY - rect.top + startY}px`;
+        editor.resize();
+      }, () => {});
     });
 
     return editor;
-};
+  };
 
-function load(url, module, callback) {
-    net.loadScript(url, function() {
-        acequire([module], callback);
+  function load(url, module, callback) {
+    net.loadScript(url, () => {
+      acequire([module], callback);
     });
-}
+  }
 
-function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
-    var session = editor.getSession();
-    var renderer = editor.renderer;
+  function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
+    const session = editor.getSession();
+    const renderer = editor.renderer;
     loader = loader || load;
 
     function toBool(value) {
-        return value === "true" || value == true;
+      return value === 'true' || value == true;
     }
 
-    editor.setDisplaySettings = function(display) {
-        if (display == null)
-            display = settingDiv.style.display == "none";
-        if (display) {
-            settingDiv.style.display = "block";
-            settingDiv.hideButton.focus();
-            editor.on("focus", function onFocus() {
-                editor.removeListener("focus", onFocus);
-                settingDiv.style.display = "none";
-            });
-        } else {
-            editor.focus();
-        }
+    editor.setDisplaySettings = function (display) {
+      if (display == null) { display = settingDiv.style.display == 'none'; }
+      if (display) {
+        settingDiv.style.display = 'block';
+        settingDiv.hideButton.focus();
+        editor.on('focus', function onFocus() {
+          editor.removeListener('focus', onFocus);
+          settingDiv.style.display = 'none';
+        });
+      } else {
+        editor.focus();
+      }
     };
 
     editor.$setOption = editor.setOption;
     editor.$getOption = editor.getOption;
-    editor.setOption = function(key, value) {
-        switch (key) {
-            case "mode":
-                editor.$setOption("mode", "ace/mode/" + value);
-            break;
-            case "theme":
-                editor.$setOption("theme", "ace/theme/" + value);
-            break;
-            case "keybindings":
-                switch (value) {
-                    case "vim":
-                        editor.setKeyboardHandler("ace/keyboard/vim");
-                        break;
-                    case "emacs":
-                        editor.setKeyboardHandler("ace/keyboard/emacs");
-                        break;
-                    default:
-                        editor.setKeyboardHandler(null);
-                }
-            break;
-
-            case "softWrap":
-            case "fontSize":
-                editor.$setOption(key, value);
-            break;
-            
+    editor.setOption = function (key, value) {
+      switch (key) {
+        case 'mode':
+          editor.$setOption('mode', `ace/mode/${value}`);
+          break;
+        case 'theme':
+          editor.$setOption('theme', `ace/theme/${value}`);
+          break;
+        case 'keybindings':
+          switch (value) {
+            case 'vim':
+              editor.setKeyboardHandler('ace/keyboard/vim');
+              break;
+            case 'emacs':
+              editor.setKeyboardHandler('ace/keyboard/emacs');
+              break;
             default:
-                editor.$setOption(key, toBool(value));
-        }
+              editor.setKeyboardHandler(null);
+          }
+          break;
+
+        case 'softWrap':
+        case 'fontSize':
+          editor.$setOption(key, value);
+          break;
+
+        default:
+          editor.$setOption(key, toBool(value));
+      }
     };
 
-    editor.getOption = function(key) {
-        switch (key) {
-            case "mode":
-                return editor.$getOption("mode").substr("ace/mode/".length);
-            break;
+    editor.getOption = function (key) {
+      switch (key) {
+        case 'mode':
+          return editor.$getOption('mode').substr('ace/mode/'.length);
+          break;
 
-            case "theme":
-                return editor.$getOption("theme").substr("ace/theme/".length);
-            break;
+        case 'theme':
+          return editor.$getOption('theme').substr('ace/theme/'.length);
+          break;
 
-            case "keybindings":
-                var value = editor.getKeyboardHandler();
-                switch (value && value.$id) {
-                    case "ace/keyboard/vim":
-                        return "vim";
-                    case "ace/keyboard/emacs":
-                        return "emacs";
-                    default:
-                        return "ace";
-                }
-            break;
-
+        case 'keybindings':
+          var value = editor.getKeyboardHandler();
+          switch (value && value.$id) {
+            case 'ace/keyboard/vim':
+              return 'vim';
+            case 'ace/keyboard/emacs':
+              return 'emacs';
             default:
-                return editor.$getOption(key);
-        }
+              return 'ace';
+          }
+          break;
+
+        default:
+          return editor.$getOption(key);
+      }
     };
 
     editor.setOptions(options);
     return editor;
-}
+  }
 
-function setupSettingPanel(settingDiv, settingOpener, editor) {
-    var BOOL = null;
+  function setupSettingPanel(settingDiv, settingOpener, editor) {
+    const BOOL = null;
 
-    var desc = {
-        mode:            "Mode:",
-        wrap:            "Soft Wrap:",
-        theme:           "Theme:",
-        fontSize:        "Font Size:",
-        showGutter:      "Display Gutter:",
-        keybindings:     "Keyboard",
-        showPrintMargin: "Show Print Margin:",
-        useSoftTabs:     "Use Soft Tabs:",
-        showInvisibles:  "Show Invisibles"
+    const desc = {
+      mode: 'Mode:',
+      wrap: 'Soft Wrap:',
+      theme: 'Theme:',
+      fontSize: 'Font Size:',
+      showGutter: 'Display Gutter:',
+      keybindings: 'Keyboard',
+      showPrintMargin: 'Show Print Margin:',
+      useSoftTabs: 'Use Soft Tabs:',
+      showInvisibles: 'Show Invisibles',
     };
 
-    var optionValues = {
-        mode: {
-            text:       "Plain",
-            javascript: "JavaScript",
-            xml:        "XML",
-            html:       "HTML",
-            css:        "CSS",
-            scss:       "SCSS",
-            python:     "Python",
-            php:        "PHP",
-            java:       "Java",
-            ruby:       "Ruby",
-            c_cpp:      "C/C++",
-            coffee:     "CoffeeScript",
-            json:       "json",
-            perl:       "Perl",
-            clojure:    "Clojure",
-            ocaml:      "OCaml",
-            csharp:     "C#",
-            haxe:       "haXe",
-            svg:        "SVG",
-            textile:    "Textile",
-            groovy:     "Groovy",
-            liquid:     "Liquid",
-            Scala:      "Scala"
-        },
-        theme: {
-            clouds:           "Clouds",
-            clouds_midnight:  "Clouds Midnight",
-            cobalt:           "Cobalt",
-            crimson_editor:   "Crimson Editor",
-            dawn:             "Dawn",
-            gob:              "Green on Black",
-            eclipse:          "Eclipse",
-            idle_fingers:     "Idle Fingers",
-            kr_theme:         "Kr Theme",
-            merbivore:        "Merbivore",
-            merbivore_soft:   "Merbivore Soft",
-            mono_industrial:  "Mono Industrial",
-            monokai:          "Monokai",
-            pastel_on_dark:   "Pastel On Dark",
-            solarized_dark:   "Solarized Dark",
-            solarized_light:  "Solarized Light",
-            textmate:         "Textmate",
-            twilight:         "Twilight",
-            vibrant_ink:      "Vibrant Ink"
-        },
-        showGutter: BOOL,
-        fontSize: {
-            "10px": "10px",
-            "11px": "11px",
-            "12px": "12px",
-            "14px": "14px",
-            "16px": "16px"
-        },
-        wrap: {
-            off:    "Off",
-            40:     "40",
-            80:     "80",
-            free:   "Free"
-        },
-        keybindings: {
-            ace: "ace",
-            vim: "vim",
-            emacs: "emacs"
-        },
-        showPrintMargin:    BOOL,
-        useSoftTabs:        BOOL,
-        showInvisibles:     BOOL
+    const optionValues = {
+      mode: {
+        text: 'Plain',
+        javascript: 'JavaScript',
+        xml: 'XML',
+        html: 'HTML',
+        css: 'CSS',
+        scss: 'SCSS',
+        python: 'Python',
+        php: 'PHP',
+        java: 'Java',
+        ruby: 'Ruby',
+        c_cpp: 'C/C++',
+        coffee: 'CoffeeScript',
+        json: 'json',
+        perl: 'Perl',
+        clojure: 'Clojure',
+        ocaml: 'OCaml',
+        csharp: 'C#',
+        haxe: 'haXe',
+        svg: 'SVG',
+        textile: 'Textile',
+        groovy: 'Groovy',
+        liquid: 'Liquid',
+        Scala: 'Scala',
+      },
+      theme: {
+        clouds: 'Clouds',
+        clouds_midnight: 'Clouds Midnight',
+        cobalt: 'Cobalt',
+        crimson_editor: 'Crimson Editor',
+        dawn: 'Dawn',
+        gob: 'Green on Black',
+        eclipse: 'Eclipse',
+        idle_fingers: 'Idle Fingers',
+        kr_theme: 'Kr Theme',
+        merbivore: 'Merbivore',
+        merbivore_soft: 'Merbivore Soft',
+        mono_industrial: 'Mono Industrial',
+        monokai: 'Monokai',
+        pastel_on_dark: 'Pastel On Dark',
+        solarized_dark: 'Solarized Dark',
+        solarized_light: 'Solarized Light',
+        textmate: 'Textmate',
+        twilight: 'Twilight',
+        vibrant_ink: 'Vibrant Ink',
+      },
+      showGutter: BOOL,
+      fontSize: {
+        '10px': '10px',
+        '11px': '11px',
+        '12px': '12px',
+        '14px': '14px',
+        '16px': '16px',
+      },
+      wrap: {
+        off: 'Off',
+        40: '40',
+        80: '80',
+        free: 'Free',
+      },
+      keybindings: {
+        ace: 'ace',
+        vim: 'vim',
+        emacs: 'emacs',
+      },
+      showPrintMargin: BOOL,
+      useSoftTabs: BOOL,
+      showInvisibles: BOOL,
     };
 
-    var table = [];
-    table.push("<table><tr><th>Setting</th><th>Value</th></tr>");
+    const table = [];
+    table.push('<table><tr><th>Setting</th><th>Value</th></tr>');
 
     function renderOption(builder, option, obj, cValue) {
-        if (!obj) {
-            builder.push(
-                "<input type='checkbox' title='", option, "' ",
-                    cValue + "" == "true" ? "checked='true'" : "",
-               "'></input>"
-            );
-            return;
-        }
-        builder.push("<select title='" + option + "'>");
-        for (var value in obj) {
-            builder.push("<option value='" + value + "' ");
+      if (!obj) {
+        builder.push(
+          "<input type='checkbox' title='", option, "' ",
+          `${cValue}` == 'true' ? "checked='true'" : '',
+          "'></input>",
+        );
+        return;
+      }
+      builder.push(`<select title='${option}'>`);
+      for (const value in obj) {
+        builder.push(`<option value='${value}' `);
 
-            if (cValue == value) {
-                builder.push(" selected ");
-            }
-
-            builder.push(">",
-                obj[value],
-                "</option>");
+        if (cValue == value) {
+          builder.push(' selected ');
         }
-        builder.push("</select>");
+
+        builder.push(
+          '>',
+          obj[value],
+          '</option>',
+        );
+      }
+      builder.push('</select>');
     }
 
-    for (var option in exports.defaultOptions) {
-        table.push("<tr><td>", desc[option], "</td>");
-        table.push("<td>");
-        renderOption(table, option, optionValues[option], editor.getOption(option));
-        table.push("</td></tr>");
+    for (const option in exports.defaultOptions) {
+      table.push('<tr><td>', desc[option], '</td>');
+      table.push('<td>');
+      renderOption(table, option, optionValues[option], editor.getOption(option));
+      table.push('</td></tr>');
     }
-    table.push("</table>");
-    settingDiv.innerHTML = table.join("");
+    table.push('</table>');
+    settingDiv.innerHTML = table.join('');
 
-    var onChange = function(e) {
-        var select = e.currentTarget;
-        editor.setOption(select.title, select.value);
+    const onChange = function (e) {
+      const select = e.currentTarget;
+      editor.setOption(select.title, select.value);
     };
-    var onClick = function(e) {
-        var cb = e.currentTarget;
-        editor.setOption(cb.title, cb.checked);
+    const onClick = function (e) {
+      const cb = e.currentTarget;
+      editor.setOption(cb.title, cb.checked);
     };
-    var selects = settingDiv.getElementsByTagName("select");
-    for (var i = 0; i < selects.length; i++)
-        selects[i].onchange = onChange;
-    var cbs = settingDiv.getElementsByTagName("input");
-    for (var i = 0; i < cbs.length; i++)
-        cbs[i].onclick = onClick;
+    const selects = settingDiv.getElementsByTagName('select');
+    for (var i = 0; i < selects.length; i++) { selects[i].onchange = onChange; }
+    const cbs = settingDiv.getElementsByTagName('input');
+    for (var i = 0; i < cbs.length; i++) { cbs[i].onclick = onClick; }
 
 
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "Hide";
-    event.addListener(button, "click", function() {
-        editor.setDisplaySettings(false);
+    const button = document.createElement('input');
+    button.type = 'button';
+    button.value = 'Hide';
+    event.addListener(button, 'click', () => {
+      editor.setDisplaySettings(false);
     });
     settingDiv.appendChild(button);
     settingDiv.hideButton = button;
-}
-exports.defaultOptions = {
-    mode:               "javascript",
-    theme:              "textmate",
-    wrap:               "off",
-    fontSize:           "12px",
-    showGutter:         "false",
-    keybindings:        "ace",
-    showPrintMargin:    "false",
-    useSoftTabs:        "true",
-    showInvisibles:     "false"
-};
-
+  }
+  exports.defaultOptions = {
+    mode: 'javascript',
+    theme: 'textmate',
+    wrap: 'off',
+    fontSize: '12px',
+    showGutter: 'false',
+    keybindings: 'ace',
+    showPrintMargin: 'false',
+    useSoftTabs: 'true',
+    showInvisibles: 'false',
+  };
 });
-                (function() {
-                    ace.acequire(["ace/ext/textarea"], function() {});
-                })();
-            
+(function () {
+  ace.acequire(['ace/ext/textarea'], () => {});
+}());

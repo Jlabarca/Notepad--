@@ -1,8 +1,7 @@
-ace.define("ace/theme/ambiance",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-ambiance";
-exports.cssText = ".ace-ambiance .ace_gutter {\
+ace.define('ace/theme/ambiance', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-ambiance';
+  exports.cssText = ".ace-ambiance .ace_gutter {\
 background-color: #3d3d3d;\
 background-image: -moz-linear-gradient(left, #3D3D3D, #333);\
 background-image: -ms-linear-gradient(left, #3D3D3D, #333);\
@@ -176,7 +175,6 @@ background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICA
 background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNQUFD4z6Crq/sfAAuYAuYl+7lfAAAAAElFTkSuQmCC\") right repeat-y;\
 }";
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
-
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

@@ -1,1 +1,3 @@
-ace.define("ace/snippets/scss",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=undefined,t.scope="scss"})
+ace.define('ace/snippets/scss', ['require', 'exports', 'module'], (e, t, n) => {
+  t.snippetText = undefined, t.scope = 'scss';
+});

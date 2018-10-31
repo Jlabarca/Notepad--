@@ -1,8 +1,7 @@
-ace.define("ace/theme/vibrant_ink",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-vibrant-ink";
-exports.cssText = ".ace-vibrant-ink .ace_gutter {\
+ace.define('ace/theme/vibrant_ink', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-vibrant-ink';
+  exports.cssText = '.ace-vibrant-ink .ace_gutter {\
 background: #1a1a1a;\
 color: #BEBEBE\
 }\
@@ -87,8 +86,8 @@ color: #99CC99\
 }\
 .ace-vibrant-ink .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYNDTc/oPAALPAZ7hxlbYAAAAAElFTkSuQmCC) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

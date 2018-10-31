@@ -1,8 +1,7 @@
-ace.define("ace/theme/gruvbox",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-gruvbox";
-exports.cssText = ".ace-gruvbox .ace_gutter-active-line {\
+ace.define('ace/theme/gruvbox', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-gruvbox';
+  exports.cssText = '.ace-gruvbox .ace_gutter-active-line {\
 background-color: #3C3836;\
 }\
 .ace-gruvbox {\
@@ -73,10 +72,9 @@ width: 5px;\
 background: #3C3836;\
 }\
 .ace-gruvbox .ace_indent-guide {\
-background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNQUFD4z6Crq/sfAAuYAuYl+7lfAAAAAElFTkSuQmCC\") right repeat-y;\
-}";
+background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNQUFD4z6Crq/sfAAuYAuYl+7lfAAAAAElFTkSuQmCC") right repeat-y;\
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
-
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

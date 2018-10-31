@@ -1,1 +1,3 @@
-ace.define("ace/snippets/mel",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=undefined,t.scope="mel"})
+ace.define('ace/snippets/mel', ['require', 'exports', 'module'], (e, t, n) => {
+  t.snippetText = undefined, t.scope = 'mel';
+});

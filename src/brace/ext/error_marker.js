@@ -1,6 +1,5 @@
 
-;
-                (function() {
-                    ace.acequire(["ace/ext/error_marker"], function() {});
-                })();
-            
+
+(function () {
+  ace.acequire(['ace/ext/error_marker'], () => {});
+}());

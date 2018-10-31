@@ -1,8 +1,7 @@
-ace.define("ace/theme/gob",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-gob";
-exports.cssText = ".ace-gob .ace_gutter {\
+ace.define('ace/theme/gob', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-gob';
+  exports.cssText = '.ace-gob .ace_gutter {\
 background: #0B1818;\
 color: #03EE03\
 }\
@@ -105,8 +104,8 @@ color: #488858;\
 .ace-gob .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMQERFpYLC1tf0PAAgOAnPnhxyiAAAAAElFTkSuQmCC) right repeat-y\
 }\
-";
+';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });

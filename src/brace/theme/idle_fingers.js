@@ -1,8 +1,7 @@
-ace.define("ace/theme/idle_fingers",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
-
-exports.isDark = true;
-exports.cssClass = "ace-idle-fingers";
-exports.cssText = ".ace-idle-fingers .ace_gutter {\
+ace.define('ace/theme/idle_fingers', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
+  exports.isDark = true;
+  exports.cssClass = 'ace-idle-fingers';
+  exports.cssText = '.ace-idle-fingers .ace_gutter {\
 background: #3b3b3b;\
 color: rgb(153,153,153)\
 }\
@@ -89,8 +88,8 @@ background-color: #FFF980\
 }\
 .ace-idle-fingers .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y\
-}";
+}';
 
-var dom = acequire("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+  const dom = acequire('../lib/dom');
+  dom.importCssString(exports.cssText, exports.cssClass);
 });
