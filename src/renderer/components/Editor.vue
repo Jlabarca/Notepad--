@@ -1,39 +1,41 @@
 <template>
   <div id="wrapper">
-    <editor-ace v-model="content" @init="editorInit" lang="html" theme="chrome" width="5000" height="1000">
+    <editor-ace v-model="content" @init="editorInit" :lang="lang" :theme="theme" width="5000" height="1000">
 
     </editor-ace>
   </div>
 </template>
 
 <script>
-  /* eslint-disable */
-  import AceEditor from './AceEditor.vue';
-  export default {
-    name: 'editorAce',
-    components: {
-       AceEditor
+/* eslint-disable */
+import AceEditor from './AceEditor.vue';
+export default {
+  name: 'editor',
+  components: {
+    'editor-ace': AceEditor,
+  },
+  data() {
+    return {
+      content: 'value',
+      theme: 'terminal',
+      lang: 'javascript',
+    };
+  },
+  methods: {
+    editorInit: function() {
+      require('brace/ext/language_tools'); //language extension prerequsite...
+      require('brace/mode/html');
+      require('brace/mode/javascript'); //language
+      require('brace/mode/less');
+      require('brace/theme/chrome');
+      require('brace/snippets/javascript'); //snippet
     },
-    data() {
-      return {
-        content: 'value'
-      }
-    },
-    methods: {
-        editorInit: function () {
-            require('brace/ext/language_tools') //language extension prerequsite...
-            require('brace/mode/html')                
-            require('brace/mode/javascript')    //language
-            require('brace/mode/less')
-            require('brace/theme/chrome')
-            require('brace/snippets/javascript') //snippet
-        }
-    },
-  };
+  },
+};
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
 * {
   box-sizing: border-box;
@@ -42,7 +44,7 @@
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 
 #wrapper {
