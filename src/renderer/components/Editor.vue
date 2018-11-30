@@ -1,7 +1,6 @@
 <template>
   <div id="wrapper">
     <editor-ace v-model="content" @init="editorInit" :lang="lang" :theme="theme" width="5000" height="1000">
-
     </editor-ace>
   </div>
 </template>
@@ -35,8 +34,6 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
 * {
   box-sizing: border-box;
   margin: 0;

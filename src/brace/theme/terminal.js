@@ -1,9 +1,10 @@
 ace.define('ace/theme/terminal', ['require', 'exports', 'module', 'ace/lib/dom'], (acequire, exports, module) => {
-  exports.isDark = true;
-  exports.cssClass = 'ace-terminal-theme';
-  exports.cssText = "\
+    exports.isDark = true;
+    exports.cssClass = 'ace-terminal-theme';
+    exports.cssText = "\
     #editor {\
         font-family: 'Nouveau_IBM_Stretch';\
+        src: url('Nouveau_IBM_Stretch.ttf') format('truetype');\
         -webkit-app-region: no-drag;\
         font-size: large;\
         display: inline-block;\
@@ -124,6 +125,6 @@ ace.define('ace/theme/terminal', ['require', 'exports', 'module', 'ace/lib/dom']
         }\
 ";
 
-  const dom = acequire('../lib/dom');
-  dom.importCssString(exports.cssText, exports.cssClass);
+    const dom = acequire('../lib/dom');
+    dom.importCssString(exports.cssText, exports.cssClass);
 });
